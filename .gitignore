@@ -1,0 +1,73 @@
+# ==============================
+# DEPENDENCIAS
+# ==============================
+node_modules/
+package-lock.json
+yarn.lock
+
+# ==============================
+# VARIABLES DE ENTORNO (SENSIBLE)
+# Contienen: contraseñas de BD, JWT secrets, OpenAI API Key
+# ==============================
+.env
+.env.local
+.env.production
+.env.development
+**/.env
+
+# ==============================
+# LOGS
+# ==============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==============================
+# BUILD / COMPILADOS
+# ==============================
+dist/
+build/
+*.tsbuildinfo
+frontend/dist/
+
+# ==============================
+# IDEs Y EDITORES
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# ==============================
+# SISTEMA OPERATIVO
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# TESTING
+# ==============================
+coverage/
+.nyc_output/
+
+# ==============================
+# ARCHIVOS TEMPORALES
+# ==============================
+*.tmp
+temp/
+tmp/
+
+# ==============================
+# MYSQL
+# ==============================
+*.sql~
+
+# ==============================
+# DOCKER
+# ==============================
+docker-compose.override.yml

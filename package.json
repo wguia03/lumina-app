@@ -1,0 +1,35 @@
+{
+  "name": "red-social-aprendizaje-colaborativo-inteligente",
+  "version": "1.0.0",
+  "description": "Plataforma donde los estudiantes co-crean conocimiento, la comunidad valida calidad, y un sistema inteligente organiza, recomienda y resume automáticamente",
+  "scripts": {
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend/api-gateway && npm install && cd ../auth-service && npm install && cd ../user-service && npm install && cd ../content-service && npm install && cd ../collaboration-service && npm install && cd ../reputation-service && npm install && cd ../recommendation-service && npm install && cd ../chatbot-service && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "dev": "concurrently -n auth,user,content,collab,reputation,recommendation,chatbot,messaging,gateway,frontend -c green,yellow,magenta,blue,cyan,yellow,magenta,blue,cyan,red \"npm run dev --prefix backend/auth-service\" \"npm run dev --prefix backend/user-service\" \"npm run dev --prefix backend/content-service\" \"npm run dev --prefix backend/collaboration-service\" \"npm run dev --prefix backend/reputation-service\" \"npm run dev --prefix backend/recommendation-service\" \"npm run dev --prefix backend/chatbot-service\" \"npm run dev --prefix backend/messaging-service\" \"npm run dev --prefix backend/api-gateway\" \"npm run dev --prefix frontend\"",
+    "docker:up": "docker-compose up",
+    "docker:up:build": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "db:init": "mysql -u root -p < database/schemas/init.sql",
+    "db:seed": "mysql -u root -p < database/seeds/sample_data.sql"
+  },
+  "keywords": [
+    "red-social",
+    "aprendizaje-colaborativo",
+    "educación",
+    "inteligencia-artificial",
+    "microservicios",
+    "react",
+    "nodejs"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

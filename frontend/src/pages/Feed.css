@@ -1,0 +1,246 @@
+/* Layout 3 columnas estilo Facebook/LinkedIn */
+.feed-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px);
+}
+
+/* Sidebar izquierdo - Navegación rápida */
+.feed-sidebar-left {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+.feed-sidebar-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.feed-sidebar-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.feed-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+}
+
+.feed-nav-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.feed-nav-item.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.feed-nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.feed-nav-item.active .feed-nav-icon {
+  background: var(--primary-color);
+}
+
+.feed-nav-item.active .feed-nav-icon,
+.feed-nav-item:hover .feed-nav-icon {
+  color: white;
+}
+
+/* Columna central - Feed */
+.feed-center {
+  min-width: 0;
+}
+
+.feed-header {
+  margin-bottom: 20px;
+}
+
+.feed-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.feed-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: none;
+  background: var(--bg-primary);
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.filter-btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.filter-btn-link:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.publications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+}
+
+/* Sidebar derecho - Widgets */
+.feed-sidebar-right {
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+.feed-widget {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  margin-bottom: 20px;
+}
+
+.feed-widget h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.feed-widget-list {
+  list-style: none;
+}
+
+.feed-widget-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: color 0.2s;
+}
+
+.feed-widget-item:last-child {
+  border-bottom: none;
+}
+
+.feed-widget-item:hover {
+  color: var(--primary-color);
+}
+
+.widget-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .feed-layout {
+    grid-template-columns: 1fr 320px;
+  }
+
+  .feed-sidebar-left {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .feed-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .feed-sidebar-right {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .feed-layout {
+    gap: 16px;
+  }
+
+  .feed-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}

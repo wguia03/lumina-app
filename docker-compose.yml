@@ -1,0 +1,227 @@
+version: '3.8'
+
+services:
+  # Base de datos MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: red_social_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: redsocial
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schemas:/docker-entrypoint-initdb.d
+    networks:
+      - red_social_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_api_gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - USER_SERVICE_URL=http://user-service:4002
+      - CONTENT_SERVICE_URL=http://content-service:4003
+      - COLLABORATION_SERVICE_URL=http://collaboration-service:4004
+      - REPUTATION_SERVICE_URL=http://reputation-service:4005
+      - RECOMMENDATION_SERVICE_URL=http://recommendation-service:4006
+      - CHATBOT_SERVICE_URL=http://chatbot-service:4007
+    networks:
+      - red_social_network
+    depends_on:
+      - auth-service
+      - user-service
+      - content-service
+    restart: unless-stopped
+
+  # Servicio de Autenticación
+  auth-service:
+    build:
+      context: ./backend/auth-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_auth
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+      - JWT_EXPIRES_IN=7d
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Usuarios
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_users
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Contenidos
+  content-service:
+    build:
+      context: ./backend/content-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_content
+    ports:
+      - "4003:4003"
+    environment:
+      - PORT=4003
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Colaboración
+  collaboration-service:
+    build:
+      context: ./backend/collaboration-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_collaboration
+    ports:
+      - "4004:4004"
+    environment:
+      - PORT=4004
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Reputación
+  reputation-service:
+    build:
+      context: ./backend/reputation-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_reputation
+    ports:
+      - "4005:4005"
+    environment:
+      - PORT=4005
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Recomendaciones
+  recommendation-service:
+    build:
+      context: ./backend/recommendation-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_recommendations
+    ports:
+      - "4006:4006"
+    environment:
+      - PORT=4006
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicio de Chatbot
+  chatbot-service:
+    build:
+      context: ./backend/chatbot-service
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: red_social_chatbot
+    ports:
+      - "4007:4007"
+    environment:
+      - PORT=4007
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=red_social_aprendizaje
+      - JWT_SECRET=your-secret-key-change-in-production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AI_MODEL=gpt-3.5-turbo
+    networks:
+      - red_social_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: red_social_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:4000
+      - VITE_WS_URL=ws://localhost:4000
+    networks:
+      - red_social_network
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+
+networks:
+  red_social_network:
+    driver: bridge
+
+volumes:
+  mysql_data:

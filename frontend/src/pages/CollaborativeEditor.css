@@ -1,0 +1,87 @@
+.editor-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  min-height: calc(100vh - 80px);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.editor-title-input {
+  flex: 1;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.editor-title-input:focus {
+  border-bottom-color: var(--primary-color);
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.active-users {
+  display: flex;
+  gap: 8px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.editor-content {
+  background: white;
+  border-radius: 8px;
+}
+
+.editor-content .quill {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.editor-content .ql-container {
+  min-height: 500px;
+  font-size: 1.1rem;
+}
+
+.editor-content .ql-editor {
+  min-height: 500px;
+}
+
+@media (max-width: 768px) {
+  .editor-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editor-title-input {
+    font-size: 1.5rem;
+  }
+
+  .editor-actions {
+    justify-content: space-between;
+  }
+}

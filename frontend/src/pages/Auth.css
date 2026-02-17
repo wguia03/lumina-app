@@ -1,0 +1,175 @@
+/* Layout estilo LinkedIn - Split screen */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg-secondary);
+}
+
+.auth-hero {
+  flex: 1;
+  background: linear-gradient(135deg, #0D9488 0%, #059669 50%, #047857 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+}
+
+.auth-hero-content {
+  max-width: 420px;
+  color: white;
+}
+
+.auth-hero h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.auth-hero p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.auth-hero-features {
+  margin-top: 40px;
+  list-style: none;
+}
+
+.auth-hero-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.auth-hero-features li::before {
+  content: '✓';
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.auth-form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-xl);
+  padding: 48px 40px;
+}
+
+.auth-header {
+  margin-bottom: 32px;
+}
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.auth-form {
+  margin-bottom: 24px;
+}
+
+.auth-form .form-group {
+  margin-bottom: 20px;
+}
+
+.auth-footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.auth-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+  color: var(--primary-hover);
+}
+
+.btn-block {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+/* Registro - grid para campos en 2 columnas en desktop */
+.auth-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Responsive - móvil primero */
+@media (max-width: 1024px) {
+  .auth-container {
+    flex-direction: column;
+  }
+
+  .auth-hero {
+    padding: 32px 24px;
+  }
+
+  .auth-hero h2 {
+    font-size: 1.75rem;
+  }
+
+  .auth-hero-features {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 32px 24px;
+  }
+
+  .auth-form-section {
+    padding: 24px 16px;
+  }
+
+  .auth-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .auth-form .form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "lumina-backend",
+  "private": true,
+  "scripts": {
+    "install:all": "npm run install:all --prefix microservicios-basico && npm install --prefix foro-estudiantes",
+    "dev:microservicios": "npm run dev --prefix microservicios-basico",
+    "dev:foro": "npm run dev --prefix foro-estudiantes",
+    "dev:foro:integrado": "npm run dev:microservicios --prefix foro-estudiantes",
+    "dev": "concurrently -n microservicios,foro -c cyan,green \"npm run dev --prefix microservicios-basico\" \"npm run dev:microservicios --prefix foro-estudiantes\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  }
+}

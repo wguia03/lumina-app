@@ -8,11 +8,15 @@ yarn.lock
 # ==============================
 # VARIABLES DE ENTORNO (SENSIBLE)
 # Contienen: contraseñas de BD, JWT secrets, OpenAI API Key
+# NOTA: .env.example se mantiene en el repo (solo plantillas)
 # ==============================
 .env
 .env.local
 .env.production
 .env.development
+.env.test
+.env.staging
+.env.*.local
 **/.env
 
 # ==============================
@@ -68,6 +72,11 @@ tmp/
 *.sql~
 
 # ==============================
-# DOCKER
+# CREDENCIALES Y SECRETOS
 # ==============================
-docker-compose.override.yml
+secrets/
+credentials.json
+*.pem
+*.p12
+*.pfx
+

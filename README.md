@@ -36,22 +36,14 @@ El proyecto utiliza una **arquitectura de microservicios** con un API Gateway ce
 | Tiempo Real | Socket.IO (WebSockets) |
 | Autenticacion | JWT (JSON Web Tokens) |
 | IA / Chatbot | OpenAI API |
-| Contenedores | Docker + Docker Compose |
 
-### Microservicios
+### Servicios
 
 | Servicio | Puerto | Descripcion |
 |----------|--------|-------------|
-| API Gateway | 4000 | Proxy central, enrutamiento y CORS |
-| Auth Service | 4001 | Registro, login y gestion de tokens JWT |
-| User Service | 4002 | Perfiles de usuario y datos academicos |
-| Content Service | 4003 | Publicaciones, comentarios y reacciones |
-| Collaboration Service | 4004 | Edicion colaborativa en tiempo real |
-| Reputation Service | 4005 | Sistema de puntos, niveles y rankings |
-| Recommendation Service | 4006 | Motor de recomendaciones con IA |
-| Chatbot Service | 4007 | Chatbot integrado con OpenAI |
-| Messaging Service | 4008 | Mensajeria directa entre usuarios |
 | Frontend (Vite) | 3000 | Interfaz de usuario React |
+| API Gateway | 4200 | Proxy central, enrutamiento |
+| Foro-estudiantes | 4300 | Auth, BD MySQL, contenido, usuarios |
 
 ---
 
@@ -68,33 +60,20 @@ Lumina/
 │   │   └── hooks/               # Custom hooks
 │   └── public/                  # Recursos estaticos (logo)
 │
-├── backend/                     # Microservicios Node.js
-│   ├── api-gateway/             # Proxy central
-│   ├── auth-service/            # Autenticacion
-│   ├── user-service/            # Usuarios
-│   ├── content-service/         # Contenido
-│   ├── collaboration-service/   # Colaboracion en tiempo real
-│   ├── reputation-service/      # Reputacion
-│   ├── recommendation-service/  # Recomendaciones
-│   ├── chatbot-service/         # Chatbot IA
-│   ├── messaging-service/       # Mensajeria directa
-│   └── shared/                  # Codigo compartido (conexion BD)
+├── backend/                     # Backend Node.js
+│   ├── microservicios-basico/   # Gateway, usuarios, cursos, temas, comentarios, chatbot
+│   └── foro-estudiantes/        # Auth, BD MySQL, contenido
 │
 ├── database/                    # Scripts SQL
 │   ├── schemas/                 # Esquema principal y migraciones
 │   └── seeds/                   # Datos de prueba
 │
-├── docker/                      # Dockerfiles
 ├── docs/                        # Documentacion adicional
 │   ├── api/                     # Documentacion de endpoints
 │   ├── architecture/            # Diagramas de arquitectura
 │   └── deployment/              # Guias de despliegue en produccion
 │
-├── configurar-proyecto.ps1      # Configuracion automatica de .env
-├── instalar-dependencias.ps1    # Instalacion de dependencias
-├── iniciar-proyecto.ps1         # Inicio de todos los servicios
-├── detener-proyecto.ps1         # Detencion de servicios
-├── docker-compose.yml           # Orquestacion con Docker
+├── GUIA-EJECUCION.md            # Guia paso a paso para ejecutar el proyecto
 └── package.json                 # Scripts npm y dependencias raiz
 ```
 
@@ -114,7 +93,7 @@ Lumina/
 
 - [Documentacion de la API](docs/api/README.md) - Endpoints y ejemplos de uso
 - [Arquitectura del Sistema](docs/architecture/README.md) - Diagramas y flujos de datos
-- [Guia de Despliegue](docs/deployment/README.md) - Docker, Vercel, Railway, AWS
+- [Guia de Despliegue](docs/deployment/README.md) - Vercel, Railway, AWS
 - [Esquema de Base de Datos](database/README.md) - Tablas, relaciones e indices
 - [Informe Tecnico Completo](INFORME-TECNICO-COMPLETO.md) - Documento academico detallado
 

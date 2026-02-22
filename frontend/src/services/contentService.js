@@ -1,6 +1,11 @@
 import api from './api'
 
 export const contentService = {
+  // Curso
+  getCourse: async (courseId) => {
+    const response = await api.get(`/api/cursos/${courseId}`)
+    return response.data
+  },
   // Publicaciones
   getPublications: async (filters = {}) => {
     const response = await api.get('/api/content/publications', { params: filters })
@@ -73,5 +78,20 @@ export const contentService = {
   updateNote: async (id, data) => {
     const response = await api.put(`/api/content/notes/${id}`, data)
     return response.data
+  },
+
+  // Recursos (enlaces, videos, materiales)
+  getResources: async (courseId) => {
+    const response = await api.get('/api/content/resources', { params: { courseId } })
+    return response.data
+  },
+
+  createResource: async (data) => {
+    const response = await api.post('/api/content/resources', data)
+    return response.data
+  },
+
+  deleteResource: async (id) => {
+    await api.delete(`/api/content/resources/${id}`)
   }
 }

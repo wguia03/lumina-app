@@ -1,49 +1,66 @@
-# Lumina - Red Social de Aprendizaje Colaborativo Inteligente
+# Lumina - Red Social de Aprendizaje Colaborativo
 
-**Lumina** es una plataforma educativa donde los estudiantes co-crean conocimiento, la comunidad valida la calidad del contenido mediante reacciones y comentarios, y un sistema inteligente organiza, recomienda y resume informacion automaticamente.
-
----
-
-## Descripcion General
-
-Lumina combina principios de **computacion social**, **inteligencia colectiva** y **sistemas colaborativos** para crear un entorno de aprendizaje moderno. Los usuarios publican contenido academico, interactuan con reacciones multiples (Me gusta, Me encanta, Impactado, Apoyo, Interesante), se comunican por mensajeria directa y reciben asistencia de un chatbot con IA.
+Plataforma educativa donde los estudiantes co-crean conocimiento, la comunidad valida contenido mediante reacciones y comentarios, y un sistema inteligente organiza y recomienda información.
 
 ---
 
-## Caracteristicas Principales
+## Características
 
-- **Publicaciones y Reacciones**: Sistema de foro con 5 tipos de reacciones estilo Facebook
-- **Mensajeria Directa**: Chat en tiempo real entre usuarios
-- **Chatbot con IA**: Asistente virtual integrado con OpenAI para resolver dudas y resumir contenido
-- **Editor Colaborativo**: Edicion simultanea de documentos con WebSockets
-- **Sistema de Reputacion**: Gamificacion con puntos, niveles e insignias
-- **Recomendaciones Inteligentes**: Motor de sugerencias personalizadas basado en IA
-- **Perfil Personalizable**: Avatar, nickname y datos academicos
+- **Publicaciones y Reacciones**: Foro con 5 tipos de reacciones (like, love, apoyo, genial, interesante)
+- **Cursos y Apuntes**: Cursos académicos con apuntes colaborativos y recursos compartidos
+- **Chatbot con IA**: Asistente virtual integrado con OpenAI
+- **Mensajería Directa**: Chat entre usuarios
+- **Sistema de Reputación**: Gamificación con puntos, niveles y logros
+- **Perfil Personalizable**: Avatar, nickname, universidad, carrera
 
 ---
 
-## Arquitectura
+## Requisitos
 
-El proyecto utiliza una **arquitectura de microservicios** con un API Gateway central.
+| Software | Versión |
+|----------|---------|
+| Node.js | 18+ |
+| npm | 9+ |
+| MySQL | 8+ |
+| Git | - |
 
-### Stack Tecnologico
+---
 
-| Capa | Tecnologia |
-|------|-----------|
-| Frontend | React 18 + Vite |
-| Backend | Node.js + Express (microservicios) |
-| Base de Datos | MySQL 8+ |
-| Tiempo Real | Socket.IO (WebSockets) |
-| Autenticacion | JWT (JSON Web Tokens) |
-| IA / Chatbot | OpenAI API |
+## Inicio Rápido
 
-### Servicios
+### 1. Base de datos
 
-| Servicio | Puerto | Descripcion |
-|----------|--------|-------------|
-| Frontend (Vite) | 3000 | Interfaz de usuario React |
-| API Gateway | 4200 | Proxy central, enrutamiento |
-| Foro-estudiantes | 4300 | Auth, BD MySQL, contenido, usuarios |
+**MySQL Workbench:** Abre `database/schemas/redsocial_FINAL.sql` y ejecuta todo. (⚠️ Incluye DROP DATABASE - borra datos existentes)
+
+**Terminal:**
+```bash
+npm run db:init:redsocial
+# o: mysql -u root -p < database/schemas/redsocial_FINAL.sql
+```
+
+### 2. Variables de entorno
+
+```bash
+cp backend/foro-estudiantes/.env.example backend/foro-estudiantes/.env
+cp frontend/.env.example frontend/.env
+```
+
+Edita `backend/foro-estudiantes/.env` con tu contraseña de MySQL.
+
+### 3. Instalar e iniciar
+
+```bash
+npm run install:all
+npm run dev
+```
+
+### 4. URLs
+
+| Servicio | URL |
+|----------|-----|
+| Frontend | http://localhost:3000 |
+| API (auth, content) | http://localhost:4300 |
+| Gateway | http://localhost:4200 |
 
 ---
 
@@ -51,54 +68,95 @@ El proyecto utiliza una **arquitectura de microservicios** con un API Gateway ce
 
 ```
 Lumina/
-├── frontend/                    # Aplicacion React + Vite
+├── frontend/                 # React + Vite (puerto 3000)
 │   ├── src/
-│   │   ├── components/          # Navbar, PublicationCard, Chatbot, etc.
-│   │   ├── pages/               # Feed, Messages, Profile, Login, Register
-│   │   ├── services/            # Clientes API (auth, content, messaging, etc.)
-│   │   ├── contexts/            # AuthContext (estado global de sesion)
-│   │   └── hooks/               # Custom hooks
-│   └── public/                  # Recursos estaticos (logo)
+│   │   ├── components/       # Navbar, PublicationCard, Chatbot, etc.
+│   │   ├── pages/            # Feed, CourseView, Profile, Login, Register
+│   │   ├── services/         # API clients
+│   │   └── contexts/         # AuthContext
+│   └── public/
 │
-├── backend/                     # Backend Node.js
-│   ├── microservicios-basico/   # Gateway, usuarios, cursos, temas, comentarios, chatbot
-│   └── foro-estudiantes/        # Auth, BD MySQL, contenido
+├── backend/
+│   ├── foro-estudiantes/     # Auth, BD MySQL, contenido (puerto 4300)
+│   │   ├── src/
+│   │   │   ├── db/           # Conexión MySQL, usuarios
+│   │   │   ├── services/     # auth, compat, usuarios, cursos, etc.
+│   │   │   └── data/         # Store en memoria
+│   │   └── scripts/          # check_schema.js
+│   │
+│   └── microservicios-basico/  # Gateway + microservicios (puerto 4200)
+│       ├── api-gateway/
+│       ├── usuarios/
+│       ├── cursos/
+│       ├── temas/
+│       ├── comentarios/
+│       └── chatbot/
 │
-├── database/                    # Scripts SQL
-│   ├── schemas/                 # Esquema principal y migraciones
-│   └── seeds/                   # Datos de prueba
+├── database/
+│   ├── schemas/              # redsocial_FINAL.sql
+│   ├── seeds/                # Datos de ejemplo
+│   └── scripts/              # init_redsocial.bat, init_redsocial.sh
 │
-├── docs/                        # Documentacion adicional
-│   ├── api/                     # Documentacion de endpoints
-│   ├── architecture/            # Diagramas de arquitectura
-│   └── deployment/              # Guias de despliegue en produccion
+├── docs/                     # Documentación extendida
+│   ├── api/
+│   ├── architecture/
+│   └── deployment/
 │
-├── GUIA-EJECUCION.md            # Guia paso a paso para ejecutar el proyecto
-└── package.json                 # Scripts npm y dependencias raiz
+├── package.json
+└── README.md
 ```
 
 ---
 
-## Seguridad
+## Comandos npm
 
-- **JWT** para autenticacion y autorizacion en cada microservicio
-- **Bcrypt** para hash de contrasenas
-- **Rate Limiting** en el API Gateway para prevenir abuso
-- **CORS** configurado para origenes permitidos
-- **Validacion de entrada** en todos los endpoints
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia backend + frontend |
+| `npm run install:all` | Instala dependencias |
+| `npm run db:init:redsocial` | Crea BD (redsocial_FINAL.sql, incluye DROP) |
+| `npm run db:seed:redsocial` | Carga datos de ejemplo |
+| `npm run db:check` | Verifica esquema BD vs esperado |
 
 ---
 
-## Documentacion Adicional
+## Base de Datos
 
-- [Documentacion de la API](docs/api/README.md) - Endpoints y ejemplos de uso
-- [Arquitectura del Sistema](docs/architecture/README.md) - Diagramas y flujos de datos
-- [Guia de Despliegue](docs/deployment/README.md) - Vercel, Railway, AWS
-- [Esquema de Base de Datos](database/README.md) - Tablas, relaciones e indices
-- [Informe Tecnico Completo](INFORME-TECNICO-COMPLETO.md) - Documento academico detallado
+**Tablas principales:** usuarios, cursos, inscripciones, publicaciones, publicacion_tags, comentarios, reacciones, seguidores, apuntes, recursos, reputacion, chatbot_*, dm_*, notificaciones, logros, usuario_logros.
+
+**Configuración** en `backend/foro-estudiantes/.env`:
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=tu_password
+DB_NAME=redsocial
+```
+
+**Verificar esquema:** `npm run db:check` genera reporte y migraciones si hay diferencias.
+
+---
+
+## Solución de Problemas
+
+| Problema | Solución |
+|----------|----------|
+| Puerto en uso | `netstat -ano \| findstr :4300` → `taskkill /PID <pid> /F` |
+| No conecta a BD | Verificar MySQL corriendo y credenciales en `.env` |
+| Usuarios no se guardan | `DB_NAME=redsocial` en `.env`, foro en puerto 4300 |
+| Cannot find module | `npm run install:all` |
+
+---
+
+## Documentación
+
+- [API](docs/api/README.md) - Endpoints
+- [Arquitectura](docs/architecture/README.md) - Diagramas
+- [Despliegue](docs/deployment/README.md) - Producción
+- [Informe Técnico](docs/INFORME-TECNICO-COMPLETO.md) - Documento académico
 
 ---
 
 ## Licencia
 
-Este proyecto esta bajo la licencia MIT. Ver [LICENSE](LICENSE) para mas detalles.
+MIT. Ver [LICENSE](LICENSE).

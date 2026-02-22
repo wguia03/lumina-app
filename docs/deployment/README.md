@@ -4,12 +4,12 @@ Esta guía te ayudará a desplegar la aplicación en entornos de producción.
 
 ## Opciones de Despliegue
 
-### Opción 1: Despliegue con Docker (Recomendado)
+### Opción 1: VPS con Node.js (Recomendado para backend completo)
 
 #### Servicios Requeridos
 
 1. **VPS o Cloud Provider** (DigitalOcean, AWS EC2, Google Cloud, etc.)
-2. **Docker y Docker Compose** instalados
+2. **Node.js 18+** y **MySQL 8+**
 3. **Dominio** (opcional pero recomendado)
 
 #### Pasos
@@ -17,87 +17,46 @@ Esta guía te ayudará a desplegar la aplicación en entornos de producción.
 ##### 1. Preparar Servidor
 
 ```bash
-# Conectar al servidor
 ssh user@your-server-ip
-
-# Instalar Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-
-# Instalar Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# Instalar Node.js, MySQL, PM2 (process manager)
 ```
 
 ##### 2. Clonar Repositorio
 
 ```bash
 git clone <repository-url>
-cd RedSocialAprendizajeColaborativoInteligente
+cd Lumina
 ```
 
 ##### 3. Configurar Variables de Entorno
 
 ```bash
-cp .env.example .env
-nano .env
+cp backend/foro-estudiantes/.env.example backend/foro-estudiantes/.env
+cp frontend/.env.example frontend/.env
+# Editar con credenciales de producción
 ```
 
-Configurar valores de producción:
-
-```env
-# Base de Datos
-DB_PASSWORD=secure-password-here
-
-# JWT
-JWT_SECRET=very-secure-random-string-here-at-least-32-chars
-
-# OpenAI
-OPENAI_API_KEY=your-openai-api-key
-
-# URLs (con tu dominio)
-API_GATEWAY_URL=https://api.tudominio.com
-FRONTEND_URL=https://tudominio.com
-```
-
-##### 4. Configurar docker-compose para Producción
-
-Crear `docker-compose.prod.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  mysql:
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-
-  api-gateway:
-    restart: always
-    environment:
-      - NODE_ENV=production
-
-  # ... (agregar restart y env para todos los servicios)
-
-  frontend:
-    restart: always
-    environment:
-      - NODE_ENV=production
-      - VITE_API_URL=https://api.tudominio.com
-```
-
-##### 5. Iniciar Servicios
+##### 4. Instalar y Compilar
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+npm run install:all
+cd frontend && npm run build
+```
+
+##### 5. Iniciar con PM2
+
+```bash
+cd backend/foro-estudiantes && pm2 start src/server.js --name foro
+cd backend/microservicios-basico/api-gateway && pm2 start index.js --name gateway
+pm2 serve ../../frontend/dist 3000 --name frontend
+# (desde backend/microservicios-basico/api-gateway, o ajustar ruta al frontend)
 ```
 
 ##### 6. Configurar Nginx como Reverse Proxy
 
 ```bash
 sudo apt install nginx
-sudo nano /etc/nginx/sites-available/red-social
+sudo nano /etc/nginx/sites-available/lumina
 ```
 
 ```nginx
@@ -246,12 +205,12 @@ Similar a Railway:
 ### Logs
 
 ```bash
-# Ver logs de Docker
-docker-compose logs -f
+# Ver logs con PM2
+pm2 logs
 
 # Ver logs específicos
-docker-compose logs -f api-gateway
-docker-compose logs -f auth-service
+pm2 logs foro
+pm2 logs gateway
 ```
 
 ### Backups de Base de Datos
@@ -259,7 +218,7 @@ docker-compose logs -f auth-service
 #### Backup Manual
 
 ```bash
-docker exec red_social_mysql mysqldump -u root -p red_social_aprendizaje > backup_$(date +%Y%m%d).sql
+mysqldump -u root -p redsocial > backup_$(date +%Y%m%d).sql
 ```
 
 #### Backup Automático (crontab)
@@ -271,7 +230,7 @@ crontab -e
 Agregar:
 
 ```cron
-0 2 * * * cd /path/to/project && docker exec red_social_mysql mysqldump -u root -p${DB_PASSWORD} red_social_aprendizaje > backups/backup_$(date +\%Y\%m\%d).sql
+0 2 * * * mysqldump -u root -p${DB_PASSWORD} redsocial > /path/to/backups/backup_$(date +\%Y\%m\%d).sql
 ```
 
 ### Actualizaciones
@@ -280,25 +239,17 @@ Agregar:
 # Pull últimos cambios
 git pull origin main
 
-# Rebuild y restart servicios
-docker-compose down
-docker-compose build
-docker-compose up -d
+# Reinstalar y recompilar
+npm run install:all
+cd frontend && npm run build
+
+# Reiniciar servicios
+pm2 restart all
 ```
 
 ### Scaling
 
-#### Escalar Servicio Específico
-
-```bash
-docker-compose up --scale content-service=3 -d
-```
-
-#### Con Kubernetes (Avanzado)
-
-```bash
-kubectl scale deployment content-service --replicas=3
-```
+Para escalar, considera usar múltiples instancias de PM2 o un balanceador de carga.
 
 ## Troubleshooting
 
@@ -306,45 +257,33 @@ kubectl scale deployment content-service --replicas=3
 
 ```bash
 # Verificar logs
-docker-compose logs
+pm2 logs
 
 # Verificar estado
-docker-compose ps
+pm2 status
 
-# Restart servicios
-docker-compose restart
+# Reiniciar servicios
+pm2 restart all
 ```
 
 ### Error de Conexión a Base de Datos
 
 1. Verificar que MySQL esté ejecutándose
-2. Verificar credenciales en variables de entorno
-3. Verificar que la red Docker esté correcta
-
-```bash
-docker network ls
-docker network inspect red_social_network
-```
+2. Verificar credenciales en `backend/foro-estudiantes/.env`
+3. Verificar que la base de datos `redsocial` existe
 
 ### Performance Lenta
 
-1. Verificar uso de recursos:
-```bash
-docker stats
-```
-
+1. Verificar uso de recursos: `pm2 monit` o `htop`
 2. Optimizar queries de base de datos
-3. Implementar caching
-4. Escalar servicios problemáticos
+3. Implementar caching (Redis)
+4. Escalar con balanceador de carga
 
 ### Disk Space
 
 ```bash
-# Ver uso de disco
 df -h
-
-# Limpiar imágenes Docker no usadas
-docker system prune -a
+# Limpiar node_modules y reinstalar si es necesario
 ```
 
 ## Rollback
@@ -352,14 +291,10 @@ docker system prune -a
 En caso de problemas con una actualización:
 
 ```bash
-# Revertir a commit anterior
 git log --oneline
 git checkout <commit-hash>
-
-# Rebuild y restart
-docker-compose down
-docker-compose build
-docker-compose up -d
+npm run install:all
+pm2 restart all
 ```
 
 ## Mejores Prácticas
@@ -399,7 +334,6 @@ Variable según uso, estimado:
 
 Para problemas específicos de despliegue, consulta:
 
-- [Documentación de Docker](https://docs.docker.com/)
 - [Documentación de Nginx](https://nginx.org/en/docs/)
 - [Let's Encrypt](https://letsencrypt.org/docs/)
 - [Railway Docs](https://docs.railway.app/)

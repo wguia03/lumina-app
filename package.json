@@ -4,15 +4,16 @@
   "description": "Plataforma donde los estudiantes co-crean conocimiento, la comunidad valida calidad, y un sistema inteligente organiza, recomienda y resume automáticamente",
   "scripts": {
     "install:all": "npm run install:backend && npm run install:frontend",
-    "install:backend": "cd backend/api-gateway && npm install && cd ../auth-service && npm install && cd ../user-service && npm install && cd ../content-service && npm install && cd ../collaboration-service && npm install && cd ../reputation-service && npm install && cd ../recommendation-service && npm install && cd ../chatbot-service && npm install",
+    "install:backend": "npm run install:backend:from-zero",
     "install:frontend": "cd frontend && npm install",
-    "dev": "concurrently -n auth,user,content,collab,reputation,recommendation,chatbot,messaging,gateway,frontend -c green,yellow,magenta,blue,cyan,yellow,magenta,blue,cyan,red \"npm run dev --prefix backend/auth-service\" \"npm run dev --prefix backend/user-service\" \"npm run dev --prefix backend/content-service\" \"npm run dev --prefix backend/collaboration-service\" \"npm run dev --prefix backend/reputation-service\" \"npm run dev --prefix backend/recommendation-service\" \"npm run dev --prefix backend/chatbot-service\" \"npm run dev --prefix backend/messaging-service\" \"npm run dev --prefix backend/api-gateway\" \"npm run dev --prefix frontend\"",
-    "docker:up": "docker-compose up",
-    "docker:up:build": "docker-compose up --build",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
+    "dev": "concurrently -n backend,frontend -c cyan,red \"npm run dev:backend:from-zero\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev:backend:from-zero",
     "db:init": "mysql -u root -p < database/schemas/init.sql",
-    "db:seed": "mysql -u root -p < database/seeds/sample_data.sql"
+    "db:seed": "mysql -u root -p < database/seeds/sample_data.sql",
+    "db:init:redsocial": "mysql -u root -p < database/schemas/redsocial_schema.sql",
+    "db:seed:redsocial": "mysql -u root -p < database/seeds/redsocial_seed.sql",
+    "install:backend:from-zero": "npm run install:all --prefix backend",
+    "dev:backend:from-zero": "npm run dev --prefix backend"
   },
   "keywords": [
     "red-social",

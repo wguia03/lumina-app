@@ -185,7 +185,7 @@ function PublicationCard({ publication, onReact, onDelete, currentUserId }) {
             </span>
           </div>
         </div>
-        {isOwner && (
+        {isOwner && onDelete && (
           <button
             className="btn-delete"
             onClick={handleDeleteClick}

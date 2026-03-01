@@ -82,6 +82,10 @@ async function getTemas() {
     const ms = await microservicios.temas.getAll();
     if (Array.isArray(ms)) return ms;
   }
+  if (db.isConfigured()) {
+    const rows = await dbPublicaciones.getAll();
+    if (Array.isArray(rows) && rows.length > 0) return rows;
+  }
   return store.temas;
 }
 
@@ -91,7 +95,11 @@ async function getTemaById(id) {
     const ms = await microservicios.temas.getById(numId);
     if (ms) return ms;
   }
-  return store.temas.find((t) => t.id === numId);
+  if (db.isConfigured()) {
+    const row = await dbPublicaciones.getById(numId);
+    if (row) return row;
+  }
+  return store.temas.find((t) => t.id === numId) || null;
 }
 
 async function createTema(titulo, contenido, cursoId, usuarioId) {
@@ -147,6 +155,9 @@ async function deleteTema(id) {
   const numId = Number(id);
   if (microservicios.isEnabled()) {
     await microservicios.temas.delete(numId);
+  }
+  if (db.isConfigured()) {
+    await dbPublicaciones.deleteById(numId);
   }
   const idx = store.temas.findIndex((t) => t.id === numId);
   if (idx >= 0) store.temas.splice(idx, 1);

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { userService } from '../services/userService'
+import { contentService } from '../services/contentService'
 import { useAuth } from '../hooks/useAuth'
+import PublicationCard from '../components/PublicationCard'
 import toast from 'react-hot-toast'
 import './Profile.css'
 
@@ -10,7 +12,9 @@ function Profile() {
   const { user: currentUser, updateUser } = useAuth()
   const [profile, setProfile] = useState(null)
   const [reputation, setReputation] = useState(null)
+  const [publications, setPublications] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingPublications, setLoadingPublications] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [isFollowing, setIsFollowing] = useState(false)
@@ -21,6 +25,12 @@ function Profile() {
   useEffect(() => {
     loadProfile()
   }, [userId])
+
+  useEffect(() => {
+    if (profile?.id) {
+      loadPublications(profile.id)
+    }
+  }, [profile?.id])
 
   useEffect(() => {
     if (profile && !isOwnProfile) {
@@ -43,6 +53,37 @@ function Profile() {
       toast.error('Error al cargar perfil')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadPublications = async (targetUserId) => {
+    try {
+      setLoadingPublications(true)
+      const data = await contentService.getPublications({ userId: targetUserId })
+      setPublications(data)
+    } catch (error) {
+      setPublications([])
+    } finally {
+      setLoadingPublications(false)
+    }
+  }
+
+  const handleReact = async (publicationId, reactionType) => {
+    try {
+      await contentService.reactToPublication(publicationId, reactionType)
+      if (profile?.id) loadPublications(profile.id)
+    } catch {
+      toast.error('Error al reaccionar')
+    }
+  }
+
+  const handleDelete = async (publicationId) => {
+    try {
+      await contentService.deletePublication(publicationId)
+      setPublications(prev => prev.filter(p => p.id !== publicationId))
+      toast.success('Publicación eliminada')
+    } catch {
+      toast.error('Error al eliminar publicación')
     }
   }
 
@@ -283,9 +324,25 @@ function Profile() {
 
       <div className="profile-activity">
         <h2>Actividad Reciente</h2>
-        <div className="empty-state">
-          <p>No hay actividad reciente</p>
-        </div>
+        {loadingPublications ? (
+          <div className="loading-spinner">Cargando publicaciones...</div>
+        ) : publications.length === 0 ? (
+          <div className="empty-state">
+            <p>No hay publicaciones aún</p>
+          </div>
+        ) : (
+          <div className="profile-publications-list">
+            {publications.map((pub) => (
+              <PublicationCard
+                key={pub.id}
+                publication={pub}
+                onReact={handleReact}
+                onDelete={isOwnProfile ? handleDelete : null}
+                currentUserId={currentUser?.id}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

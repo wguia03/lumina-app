@@ -10,7 +10,6 @@ yarn.lock
 # Contienen: contraseñas de BD, JWT secrets, OpenAI API Key
 # NOTA: .env.example se mantiene en el repo (solo plantillas)
 # ==============================
-.env
 .env.local
 .env.production
 .env.development

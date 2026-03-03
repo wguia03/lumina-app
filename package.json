@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Plataforma donde los estudiantes co-crean conocimiento, la comunidad valida calidad, y un sistema inteligente organiza, recomienda y resume automáticamente",
   "scripts": {
+    "start": "node backend/foro-estudiantes/src/server.js",
     "install:all": "npm run install:backend && npm run install:frontend",
     "install:backend": "npm run install:backend:from-zero",
     "install:frontend": "cd frontend && npm install",

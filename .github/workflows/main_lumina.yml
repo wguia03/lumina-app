@@ -26,15 +26,18 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd backend/foro-estudiantes
-          npm install
+          npm install --production
           cd ../microservicios-basico
-          npm install
+          npm install --production
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: |
+            backend/
+            .env.example
+            package.json
 
   deploy:
     runs-on: ubuntu-latest
@@ -63,5 +66,5 @@ jobs:
           app-name: 'lumina'
           slot-name: 'Production'
           package: .
-          startup-command: 'npm run dev'
+          startup-command: 'npm start'
           

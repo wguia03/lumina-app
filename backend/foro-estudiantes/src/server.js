@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../../../.env") });
 const http = require("http");
 const express = require("express");
 const cors = require("cors");
@@ -21,12 +22,23 @@ const messagingCompat = require("./services/compat/messagingCompat");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" }, path: "/socket.io" });
+
+// Configuración CORS para permitir conexiones desde cualquier origen
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+const io = new Server(server, { 
+  cors: corsOptions,
+  path: "/socket.io" 
+});
 messagingSocket.setupMessagingSocket(io);
 
 const PORT = process.env.PORT || 4300;
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/health", (req, res) => {

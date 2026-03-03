@@ -1,13 +1,6 @@
-// Cargar .env desde múltiples ubicaciones (prioridad: chatbot > microservicios > raíz)
+// Cargar .env desde la raíz del proyecto
 const path = require("path");
-const envPaths = [
-  path.join(__dirname, ".env"),
-  path.join(__dirname, "../.env"),
-  path.join(__dirname, "../../../.env")
-];
-for (const p of envPaths) {
-  require("dotenv").config({ path: p });
-}
+require("dotenv").config({ path: path.join(__dirname, "../../.env") });
 const express = require("express");
 const cors = require("cors");
 

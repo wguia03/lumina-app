@@ -56,6 +56,7 @@ function Messages() {
   useEffect(() => {
     messagingSocket.connect()
     const onNew = (msg) => {
+      if (msg.senderId === user?.id) return
       setMessages(prev => {
         if (prev.some(p => p.id === msg.id)) return prev
         return [...prev, { ...msg }]
@@ -75,7 +76,7 @@ function Messages() {
       messagingSocket.offMessagesSeen(onSeen)
       messagingSocket.offConvUpdate(loadConversations)
     }
-  }, [])
+  }, [user?.id])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
